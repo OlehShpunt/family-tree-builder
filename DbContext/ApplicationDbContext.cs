@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;           // This brings in DbContext and DbSet<T>
+using Microsoft.EntityFrameworkCore;
 using family_tree_builder.Models;
 
 namespace family_tree_builder.Data
