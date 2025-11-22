@@ -54,6 +54,8 @@ _ReSharper.*/
 *.lastbuildstate
 *.VC.db
 *.db
+*.db-shm
+*.db-wal
 
 # NuGet packages
 packages/
