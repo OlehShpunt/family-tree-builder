@@ -1,0 +1,106 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userprefs
+*.log
+*.bak
+*.cache
+*.ncb
+*.scc
+*.vssscc
+*.vsscc
+_ReSharper.*/
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# Build artifacts
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.pdb
+*.ilk
+*.aps
+*.bsc
+*.idb
+*.lib
+*.obj
+*.res
+*.pch
+*.ipch
+*.tlb
+*.tlh
+*.tmp
+*.vspscc
+*.vsp
+*.vshost.*
+*.testsettings
+*.trx
+*.webtest
+*.metaproj
+*.obj
+*.user
+*.aps
+*.bsc
+*.map
+*.dep
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.ipch
+*.tlog
+*.lastbuildstate
+*.VC.db
+
+# NuGet packages
+packages/
+*.nupkg
+*.snupkg
+*.lock.json # For .NET Core/5+
+
+# Rider (JetBrains IDE)
+.idea/
+
+# DotNet tools
+.config/dotnet-tools.json
+
+# Azure tools
+*.publishsettings
+
+# Other common files to ignore
+*.pidb
+*.vsw
+*.bak
+*.resharper
+*.resharper.user
+*.dotsettings
+*.dotsettings.user
+*.kpf
+*.kpr
+*.user
+*.tmp
+*.log
+*.old
+*.obj
+*.o
+*.lo
+*.la
+*.libs
+*.so
+*.a
+*.dll
+*.exe
+*.com
+*.class
+*.jar
+*.pyc
+*.pyo
+*.swp
+*~
+# Visual Studio Code
+.vscode/
+
+# Node modules (if using client-side frameworks like Angular/React)
+node_modules/
