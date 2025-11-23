@@ -53,6 +53,9 @@ _ReSharper.*/
 *.tlog
 *.lastbuildstate
 *.VC.db
+*.db
+*.db-shm
+*.db-wal
 
 # NuGet packages
 packages/
@@ -99,6 +102,7 @@ packages/
 *.pyo
 *.swp
 *~
+
 # Visual Studio Code
 .vscode/
 

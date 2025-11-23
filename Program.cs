@@ -1,29 +1,43 @@
-var builder = WebApplication.CreateBuilder(args);
+    using family_tree_builder.Data;
+    using Microsoft.EntityFrameworkCore;
+    using System.Text.Json;
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    // Add services to the container.
+    builder.Services.AddControllersWithViews();
+    // Database
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite("Data Source=familytree.db"));
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+    // Convert PascalCase fields into camelCase and vice versa when sending to/from browser
+    builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        });
 
-app.UseHttpsRedirection();
-app.UseRouting();
+    var app = builder.Build();
 
-app.UseAuthorization();
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Home/Error");
+        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        app.UseHsts();
+    }
 
-app.MapStaticAssets();
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+    app.UseRouting();
+    app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    app.MapStaticAssets();
+
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+        .WithStaticAssets();
 
 
-app.Run();
+    app.Run();
