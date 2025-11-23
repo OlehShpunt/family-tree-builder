@@ -8,7 +8,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         body {
             padding-top: 70px;
@@ -42,10 +41,18 @@
             <div class="col-md-3 p-3 border-end">
                 <h5>Actions</h5>
                 <div class="d-grid gap-2">
-                    <button class="btn btn-success sidebar-btn" data-bs-toggle="tab" data-bs-target="#addParents">Add Parents</button>
-					<button class="btn btn-info sidebar-btn" data-bs-toggle="tab" data-bs-target="#addChild">Add Child</button>
-                    <button class="btn btn-warning sidebar-btn" data-bs-toggle="tab" data-bs-target="#editTab">Edit Person</button>
-                    <button class="btn btn-danger sidebar-btn" data-bs-toggle="tab" data-bs-target="#deleteTab">Delete Person</button>
+                    <button class="btn btn-success sidebar-btn" 
+                            onclick="showTab('addParents')" 
+                            type="button">Add Parents</button>
+                    <button class="btn btn-info sidebar-btn" 
+                            onclick="showTab('addChild')" 
+                            type="button">Add Child</button>
+                    <button class="btn btn-warning sidebar-btn" 
+                            onclick="showTab('editTab')" 
+                            type="button">Edit Person</button>
+                    <button class="btn btn-danger sidebar-btn" 
+                            onclick="showTab('deleteTab')" 
+                            type="button">Delete Person</button>
                 </div>
 
                 <!-- Tabs Content -->
@@ -130,14 +137,47 @@
         </div> <!-- End Row -->
     </div> <!-- End Container -->
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             new DataLoader("@Url.Action("GetAll", "Home")").initialize();
         })
     </script>
+
+    <script>
+    // Pure JavaScript tab system – no Bootstrap JS needed → no "Illegal invocation" ever
+    document.addEventListener("DOMContentLoaded", function () {
+        
+        // === 1. Manual tab switching (bulletproof) ===
+        const tabButtons = document.querySelectorAll('.sidebar-btn');
+        const tabPanes   = document.querySelectorAll('.tab-pane');
+
+        function showTab(tabId) {
+            // Remove active classes from all
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+
+            // Add active to clicked button and target pane
+            const activeButton = document.querySelector(`.sidebar-btn[onclick="showTab('${tabId}')"]`);
+            const activePane   = document.getElementById(tabId);
+
+            if (activeButton) activeButton.classList.add('active');
+            if (activePane) {
+                activePane.classList.add('show', 'active');
+            }
+        }
+
+        // Make the function global so onclick works
+        window.showTab = showTab;
+
+        // Optional: open first tab on load
+        showTab('addParents');
+
+        // === 2. Initialize the Family Tree ===
+        new DataLoader("@Url.Action("GetAll", "Home")").initialize();
+    });
+</script>
 </body>
 
 </html>
