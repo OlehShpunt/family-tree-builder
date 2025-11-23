@@ -4,6 +4,7 @@ class DataLoader {
     this.dataUrl = dataUrl;
   }
 
+  // Initialize initial tree render no page load/reload
   async initialize() {
     const container = document.getElementById("treeContainer");
     if (!container) {
