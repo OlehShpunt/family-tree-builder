@@ -4,9 +4,8 @@ class DataLoader {
     this.dataUrl = dataUrl;
   }
 
-  initialize() {
+  async initialize() {
     const container = document.getElementById("treeContainer");
-
     if (!container) {
       console.error(`FamilyTree container "treeContainer" not found`);
       return;
@@ -18,7 +17,7 @@ class DataLoader {
     }
 
     this.tree = new FamilyTree(container, {
-      mouseScrol: FamilyTree.action.scroll,
+      mouseScroll: FamilyTree.action.scroll,
       enableSearch: true,
       nodeBinding: {
         field_0: "name",
@@ -27,26 +26,34 @@ class DataLoader {
       },
     });
 
-    container.familyTreeInstance = this.tree;
+    window.familyTreeInstance = this.tree;
+    window.currentSelectedNode = null;
 
-    this.loadDatabaseData();
+    // Attach listener
+    this.tree.onNodeClick((args) => {
+      const node = args.node; // clicked node object
+      window.currentSelectedNode = node;
+      console.log("Node clicked:", window.currentSelectedNode);
+
+      return false; // prevents default behavior if needed
+    });
+
+    // Load the tree data
+    await this.loadDatabaseData();
   }
 
-  loadDatabaseData() {
-    fetch(this.dataUrl)
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then((data) => {
-        this.tree.load(data);
-      })
-      .catch((err) => {
-        console.error("Failed to load family tree data:", err);
-        alert("Could not load family data");
-      });
+  async loadDatabaseData() {
+    try {
+      const response = await fetch(this.dataUrl);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      this.tree.load(data);
+      window.lastData = data;
+    } catch (err) {
+      console.error("Failed to load family tree data:", err);
+      alert("Could not load family data");
+    }
   }
 }
 
-// Make globally available
 window.DataLoader = DataLoader;

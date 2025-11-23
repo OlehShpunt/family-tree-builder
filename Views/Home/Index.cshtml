@@ -51,7 +51,7 @@
                             onclick="showTab('editPerson')" 
                             type="button">Edit Person</button>
                     <button class="btn btn-danger sidebar-btn" 
-                            onclick="showTab('deleteTab')" 
+                            onclick="showTab('deletePerson')" 
                             type="button">Delete Person</button>
                 </div>
 
@@ -61,18 +61,18 @@
                     <!-- Add Parents Tab -->
                     <div class="tab-pane fade" id="addParents">
                         <h6>Add Parents</h6>
-                        <form id="addParentForm">
+                        <!-- <form id="addParentForm"> -->
                             <div class="mb-2">
                                 <label>Fathers' Name</label>
-                                <input type="text" name="Name" class="form-control" required />
+                                <input type="text" name="Name" class="form-control" id="fathersName" required />
                             </div>
                             <div class="mb-2">
                                 <label>Mothers' Name</label>
-                                <input type="text" name="Name" class="form-control" required />
+                                <input type="text" name="Name" class="form-control" id="mothersName" required />
                             </div>
                             
-                            <button type="submit" class="btn btn-primary btn-sm w-100">Add</button>
-                        </form>
+                            <button onclick="addParents()" class="btn btn-primary btn-sm w-100">Add</button>
+                        <!-- </form> -->
                     </div>
 
                     <!-- Add Child Tab -->
@@ -116,7 +116,7 @@
                     </div>
 
                     <!-- Delete Person Tab -->
-                    <div class="tab-pane fade" id="deleteTab">
+                    <div class="tab-pane fade" id="deletePerson">
                         <h6>Delete Person</h6>
                         <p>Select a person on the tree to delete</p>
                     </div>
@@ -132,12 +132,6 @@
 
         </div> <!-- End Row -->
     </div> <!-- End Container -->
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            new DataLoader("@Url.Action("GetAll", "Home")").initialize();
-        })
-    </script>
 
     <script>
     // Pure JavaScript tab system – no Bootstrap JS needed → no "Illegal invocation" ever
@@ -174,6 +168,24 @@
         new DataLoader("@Url.Action("GetAll", "Home")").initialize();
     });
 </script>
+
+    <script>
+        function addParents() {
+
+            console.log("Button clicked!")
+
+            const fName = document.getElementById("fathersName").value;
+            const mName = document.getElementById("mothersName").value;
+
+            if (fName == "" || mName == "") {
+                return;
+            };
+
+            DataManager.addParents(mName, fName);
+        }
+
+        window.addParents = addParents;
+    </script>
 </body>
 
 </html>
