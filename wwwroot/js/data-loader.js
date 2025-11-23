@@ -34,8 +34,6 @@ class DataLoader {
       const node = args.node; // clicked node object
       window.currentSelectedNode = node;
       console.log("Node clicked:", window.currentSelectedNode);
-
-      return false; // prevents default behavior if needed
     });
 
     // Load the tree data

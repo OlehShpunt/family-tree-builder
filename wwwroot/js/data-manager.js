@@ -47,6 +47,11 @@ class DataManager {
     father.pids = [mother.id];
 
     const selectedNodeId = window.currentSelectedNode.id;
+
+    // NOTE: Not required, but let's keep it for reference
+    // mother.children = [selectedNodeId];
+    // father.children = [selectedNodeId];
+
     console.log("Last data 1 element: ", window.lastData[0]);
     const allNodes = Object.values(window.familyTreeInstance);
     console.log("allNodes = ", allNodes);
@@ -63,13 +68,40 @@ class DataManager {
       }
     });
 
-    this.updateLastData([...window.lastData, mother, father]);
+    this.updateLastData([mother, father, ...window.lastData]);
 
     console.log(window.lastData[0]);
     console.log(window.lastData[1]);
     console.log(window.lastData[2]);
     console.log(window.lastData[3]);
     console.log(window.lastData[4]);
+
+    const container = document.getElementById("treeContainer");
+
+    container.innerHTML = "";
+    window.familyTreeInstance?.destroy();
+
+    window.familyTreeInstance = new FamilyTree(
+      document.getElementById("treeContainer"),
+      {
+        nodeMouseClick: FamilyTree.action.none,
+        mode: "light",
+        nodeBinding: {
+          field_0: "name",
+          field_1: "title",
+          img_0: "photoUrl",
+        },
+      }
+    );
+
+    window.currentSelectedNode = null;
+
+    // Attach listener
+    window.familyTreeInstance.onNodeClick((args) => {
+      const node = args.node; // clicked node object
+      window.currentSelectedNode = node;
+      console.log("Node clicked:", window.currentSelectedNode);
+    });
 
     window.familyTreeInstance.load(window.lastData);
   }
