@@ -12,5 +12,7 @@ namespace family_tree_builder.Models
         // Partner IDs
         public List<int>? Pids { get; set; }
         public required string Name { get; set; }
+
+        // TODO: I may wanna add another field like authenticationEmail or authenticationToken (reasearch it)
     }
 }
