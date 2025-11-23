@@ -2,5 +2,136 @@
     ViewData["Title"] = "Your Family Tree";
 }
 
-<!-- TODO: Add family tree page layout here -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            padding-top: 70px;
+        }
+        #treeContainer {
+            height: 80vh;
+            border: 1px solid #ddd;
+            overflow: auto;
+        }
+        .sidebar-btn {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
 
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="~/img/logo.jpg" width="40" height="40" class="d-inline-block align-text-top me-2" />
+                Family Tree
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Left Sidebar -->
+            <div class="col-md-3 p-3 border-end">
+                <h5>Actions</h5>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success sidebar-btn" data-bs-toggle="tab" data-bs-target="#addParents">Add Parents</button>
+					<button class="btn btn-info sidebar-btn" data-bs-toggle="tab" data-bs-target="#addChild">Add Child</button>
+                    <button class="btn btn-warning sidebar-btn" data-bs-toggle="tab" data-bs-target="#editTab">Edit Person</button>
+                    <button class="btn btn-danger sidebar-btn" data-bs-toggle="tab" data-bs-target="#deleteTab">Delete Person</button>
+                </div>
+
+                <!-- Tabs Content -->
+                <div class="tab-content mt-3">
+
+                    <!-- Add Parents Tab -->
+                    <div class="tab-pane fade" id="addParents">
+                        <h6>Add Parents</h6>
+                        <form id="addParentForm">
+                            <div class="mb-2">
+                                <label>Name</label>
+                                <input type="text" name="Name" class="form-control" required />
+                            </div>
+                            <div class="mb-2">
+                                <label>Gender</label>
+                                <select name="Gender" class="form-select">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label>Father</label>
+                                <select name="FatherId" class="form-select">
+                                    <option value="">None</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Add</button>
+                        </form>
+                    </div>
+
+                    <!-- Add Child Tab -->
+                    <div class="tab-pane fade" id="addChild">
+                        <h6>Add Child</h6>
+                        <form id="addPersonForm">
+                            <div class="mb-2">
+                                <label>Name</label>
+                                <input type="text" name="Name" class="form-control" required />
+                            </div>
+                            <div class="mb-2">
+                                <label>Gender</label>
+                                <select name="Gender" class="form-select">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label>Father</label>
+                                <select name="FatherId" class="form-select">
+                                    <option value="">None</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label>Mother</label>
+                                <select name="MotherId" class="form-select">
+                                    <option value="">None</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Add</button>
+                        </form>
+                    </div>
+
+                    <!-- Edit Person Tab -->
+                    <div class="tab-pane fade" id="editTab">
+                        <h6>Edit Person</h6>
+                    </div>
+
+                    <!-- Delete Person Tab -->
+                    <div class="tab-pane fade" id="deleteTab">
+                        <h6>Delete Person</h6>
+                        <p>Select a person on the tree to delete</p>
+                    </div>
+
+                </div> <!-- End Tab Content -->
+            </div> <!-- End Left Sidebar -->
+
+            <!-- Right Tree Container -->
+            <div class="col-md-9 p-3">
+                <h5>Family Tree</h5>
+                <div id="treeContainer"></div>
+            </div>
+
+        </div> <!-- End Row -->
+    </div> <!-- End Container -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
