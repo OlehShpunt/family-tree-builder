@@ -47,9 +47,6 @@
                     <button class="btn btn-info sidebar-btn" 
                             onclick="showTab('addChild')" 
                             type="button">Add Child</button>
-                    <button class="btn btn-warning sidebar-btn" 
-                            onclick="showTab('editPerson')" 
-                            type="button">Edit Person</button>
                     <button class="btn btn-danger sidebar-btn" 
                             onclick="showTab('deletePerson')" 
                             type="button">Delete Person</button>
@@ -78,41 +75,19 @@
                     <!-- Add Child Tab -->
                     <div class="tab-pane fade" id="addChild">
                         <h6>Add Child</h6>
-                        <form id="addChildForm">
                             <div class="mb-2">
                                 <label>Name</label>
-                                <input type="text" name="Name" class="form-control" required />
+                                <input type="text" name="Name" class="form-control" id="childsName" required />
                             </div>
                             <div class="mb-2">
                                 <label>Gender</label>
-                                <select name="Gender" class="form-select">
+                                <select name="Gender" class="form-select" id="childsGender">
                                     <option>Male</option>
                                     <option>Female</option>
                                     <option>Prefer not to say</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-sm w-100">Add</button>
-                        </form>
-                    </div>
-
-                    <!-- Edit Person Tab -->
-                    <div class="tab-pane fade" id="editPerson">
-                        <h6>Edit Person</h6>
-                        <form id="editPersonForm">
-                            <div class="mb-2">
-                                <label>Name</label>
-                                <input type="text" name="Name" class="form-control" required />
-                            </div>
-                            <div class="mb-2">
-                                <label>Gender</label>
-                                <select name="Gender" class="form-select">
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                    <option>Prefer not to say</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm w-100">Add</button>
-                        </form>
+                            <button onclick="addChild()" type="submit" class="btn btn-primary btn-sm w-100">Add</button>
                     </div>
 
                     <!-- Delete Person Tab -->
@@ -182,6 +157,20 @@
             };
 
             DataManager.addParents(mName, fName);
+        }
+
+        function addChild() {
+
+            console.log("Button clicked!")
+
+            const cName = document.getElementById("childsName").value;
+            const cGender = document.getElementById("childsGender").value;
+
+            if (cName == "" || cGender == "") {
+                return;
+            };
+
+            DataManager.addChild(cName, cGender);
         }
 
         window.addParents = addParents;

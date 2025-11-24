@@ -1,26 +1,32 @@
 class DataManager {
-  static addChild(child) {
-    // Set parent ids
-    const currentSelectedNode = window.currentSelectedNode;
-
-    if (!currentSelectedNode) {
-      alert("Please select a person first!");
+  static addChild(cName, cGender) {
+    if (!window.currentSelectedNode) {
+      alert("Please select a child's parent first!");
       return;
     }
 
-    child.id = this._getRandomId();
+    console.log(cGender);
 
-    if (currentSelectedNode.gender.toLowerCase() == "male") {
-      child.fid = currentSelectedNode.id;
-      child.mid = currentSelectedNode.pids[0];
+    const child = {
+      id: this._getRandomId(),
+      gender: cGender.toLowerCase(),
+      name: cName,
+      mid: null,
+      fid: null,
+    };
+
+    if (window.currentSelectedNode.gender == "male") {
+      child.fid = window.currentSelectedNode.id;
+      child.mid = window.currentSelectedNode.pids[0];
     } else {
-      child.mid = currentSelectedNode.id;
-      child.fid = currentSelectedNode.pids[0];
+      child.mid = window.currentSelectedNode.id;
+      child.fid = window.currentSelectedNode.pids[0];
     }
 
-    const tree = document.getElementById("treeContainer");
-    const allPersonNodes = tree.get();
-    tree.load([...allPersonNodes, child]);
+    // Take data from previous render and combine with new added child
+    this.updateLastData([child, ...window.lastData]);
+
+    this.initializeTreeRerender();
   }
 
   static addParents(mName, fName) {
@@ -60,23 +66,6 @@ class DataManager {
     this.updateLastData([mother, father, ...window.lastData]);
 
     this.initializeTreeRerender();
-  }
-
-  static editPerson(updatedData) {
-    console.log("NAMEIS: ", window.selectedNode.name);
-
-    if (!window.selectedNode) {
-      alert("Please select a person first!");
-      return;
-    }
-
-    const updatedNode = {
-      id: window.selectedNode.id,
-      name: updatedData.name || window.selectedNode.name,
-      gender: updatedData.gender || window.selectedNode.gender,
-    };
-
-    tree.updateNode(updatedNode);
   }
 
   deleteSelectedPerson() {
