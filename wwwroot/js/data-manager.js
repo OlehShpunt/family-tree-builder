@@ -68,24 +68,39 @@ class DataManager {
     this.initializeTreeRerender();
   }
 
-  deleteSelectedPerson() {
-    const selectedNode = window.currentSelectedNode;
-
-    if (!selectedNode) {
+  static deletePerson() {
+    if (!window.currentSelectedNode) {
       alert("Please select a person to delete!");
       return;
     }
 
-    if (
-      !confirm(
-        `Are you sure you want to delete "${selectedNode.name}" and all their descendants?`
-      )
-    ) {
+    if (!confirm("Are you sure you want to delete the selected person?")) {
       return;
     }
 
-    // This removes the node and all its children automatically
-    tree.removeNode(selectedNode.id);
+    window.lastData = window.lastData.filter(
+      (node) => node.id != window.currentSelectedNode.id
+    );
+
+    window.lastData.forEach((node) => {
+      if (node.fid == window.currentSelectedNode.id) {
+        node.fid = undefined;
+      }
+      if (node.mid == window.currentSelectedNode.id) {
+        node.mid = undefined;
+      }
+      if (node.pids) {
+        if (node.pids[0] == window.currentSelectedNode.id) {
+          node.pids[0] = undefined;
+        }
+      }
+    });
+
+    console.log("Last data = ", window.lastData);
+
+    this.updateLastData([...window.lastData]);
+
+    this.initializeTreeRerender();
   }
 
   static _getRandomId() {

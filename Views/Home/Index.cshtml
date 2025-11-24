@@ -94,6 +94,7 @@
                     <div class="tab-pane fade" id="deletePerson">
                         <h6>Delete Person</h6>
                         <p>Select a person on the tree to delete</p>
+                        <button onclick="deletePerson()" type="submit" class="btn btn-primary btn-sm w-100">Delete</button>
                     </div>
 
                 </div> <!-- End Tab Content -->
@@ -171,6 +172,11 @@
             };
 
             DataManager.addChild(cName, cGender);
+        }
+
+        function deletePerson() {
+            console.log("Button clicked!");
+            DataManager.deletePerson();
         }
 
         window.addParents = addParents;
