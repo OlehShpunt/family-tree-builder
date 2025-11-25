@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http; // Good practice for controllers
+using Microsoft.AspNetCore.Http; 
 
 [ApiController]
 [Route("export")]
-public class ExportController : ControllerBase // 2. Must inherit from ControllerBase
+public class ExportController : ControllerBase 
 {
-    private readonly EmailService _emailService; // 3. Field must be inside the class
+    private readonly EmailService _emailService; 
 
-    // Constructor
+
     public ExportController(EmailService emailService)
     {
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
@@ -22,10 +22,10 @@ public class ExportController : ControllerBase // 2. Must inherit from Controlle
 
     [Authorize]
     [HttpPost("/send-message")] 
-    // This method must be INSIDE the ExportController class
+   
     public async Task<IActionResult> SendMessage([FromForm] string email, [FromForm] string message)
     {
-        // Compiler can now find BadRequest(), Ok(), and StatusCode()
+       
         if (string.IsNullOrWhiteSpace(email))
             return BadRequest(new { success = false, message = "Recipient email is required." });
 
@@ -39,7 +39,7 @@ public class ExportController : ControllerBase // 2. Must inherit from Controlle
                 ";
 
             
-            // Compiler can now find _emailService
+          
             await _emailService.SendSimpleEmailAsync(email, subject, body);
 
             return Ok(new { success = true });
