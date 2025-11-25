@@ -24,7 +24,7 @@ public class HomeController : Controller
         return View();
     }
 
-    // Secured endpoint – replace all nodes for the current user only
+ 
     [HttpPost("replace-all-people-nodes")]
     [Authorize]
     public async Task<IActionResult> ReplaceAll([FromBody] List<PersonNode> people)
@@ -34,7 +34,7 @@ public class HomeController : Controller
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
-        // Ensure every node belongs to the current user (defense in depth)
+    
         foreach (var p in people)
             p.UserId = userId;
 
@@ -43,7 +43,7 @@ public class HomeController : Controller
         return Ok("Database replaced");
     }
 
-    // Secured endpoint – get only the current user's nodes
+
     [HttpGet("all-people-nodes")]
     [Authorize]
     public async Task<IActionResult> GetAll()

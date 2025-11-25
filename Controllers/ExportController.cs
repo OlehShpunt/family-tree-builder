@@ -1,6 +1,3 @@
-// ExportController.cs
-
-// 1. Essential using directives for ASP.NET Core MVC and Authorization
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -51,7 +48,7 @@ public class ExportController : ControllerBase
         }
     }
     
-    // Helper method for email validation
+
     private bool IsValidEmail(string email)
     {
         try

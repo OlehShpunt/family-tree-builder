@@ -149,7 +149,7 @@
     </div> 
 
     <script>
-    // Pure JavaScript tab system – no Bootstrap JS needed → no "Illegal invocation" ever
+    
     document.addEventListener("DOMContentLoaded", function () {
 
         
@@ -175,9 +175,10 @@
 
         window.showTab = showTab;
 
-        // Optional: open first tab on load
+  
         showTab('addParents');
 
+       
         new DataLoader("@Url.Action("GetAll", "Home")").initialize();
     });
 </script>
