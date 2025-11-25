@@ -49,7 +49,17 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
 
+// Cookies consent
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    // Require consent for non-essential cookies
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+});
+
 var app = builder.Build();
+
+app.UseCookiePolicy();
 
 // Pipeline
 if (app.Environment.IsDevelopment())
