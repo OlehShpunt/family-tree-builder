@@ -66,6 +66,10 @@
                     <button class="btn btn-danger sidebar-btn" 
                             onclick="showTab('deletePerson')" 
                             type="button">Delete Person</button>
+                    <button type="button" class="btn btn-warning"
+                            data-bs-toggle="modal" data-bs-target="#emailTreeModal">
+                            Email My Family Tree
+                    </button>
                 </div>
 
                 <!-- Tabs Content -->
@@ -105,7 +109,27 @@
                             </div>
                             <button onclick="addChild()" type="submit" class="btn btn-primary btn-sm w-100">Add</button>
                     </div>
-
+                    <div class="modal fade" id="emailTreeModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Share Family Tree by Email</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Recipient Email</label>
+                                        <input type="email" class="form-control" id="recipientEmail" placeholder="grandma@example.com" required>
+                                    </div>
+                                    <div id="emailStatus"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary" onclick="sendMessage()">Send Email</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Delete Person Tab -->
                     <div class="tab-pane fade" id="deletePerson">
                         <h6>Delete Person</h6>
@@ -189,7 +213,42 @@
 
             DataManager.addChild(cName, cGender);
         }
+        async function sendMessage() {
+            const email = document.getElementById("recipientEmail").value.trim();
+            const message = "Please check out the updated Family Tree!"; /
+    
+            if (!email) return alert("Please enter a recipient email");
 
+            const emailStatusElement = document.getElementById("emailStatus");
+            emailStatusElement.innerHTML =
+                '<small class="text-info">Sending  message...</small>';
+
+            try {
+                const formData = new FormData();
+                formData.append("email", email);
+                formData.append("message", message); 
+
+                const response = await fetch("/send-message", {
+                method: "POST",
+                body: formData 
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    emailStatusElement.innerHTML =
+                        `<div class="text-success">Message sent successfully to ${email}!</div>`;
+                } else {
+                    emailStatusElement.innerHTML =
+                        `<div class="text-danger">Error: ${result.message || "Send failed"}</div>`;
+                }
+
+            } catch (err) {
+                console.error("Message send error:", err);
+                emailStatusElement.innerHTML =
+                    `<div class="text-danger">Failed: Network or server connection error.</div>`;
+            }
+        }
         function deletePerson() {
             console.log("Button clicked!");
             DataManager.deletePerson();

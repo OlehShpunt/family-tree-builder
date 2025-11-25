@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using System.Security.Claims;                 // ← THIS WAS MISSING
-using Microsoft.AspNetCore.Authorization;       // ← for [Authorize]
+using System.Security.Claims;                 
+using Microsoft.AspNetCore.Authorization;      
 using Microsoft.AspNetCore.Mvc;
 using family_tree_builder.Models;
 using family_tree_builder.Utilities;
