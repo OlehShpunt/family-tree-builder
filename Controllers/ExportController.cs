@@ -32,7 +32,12 @@ public class ExportController : ControllerBase // 2. Must inherit from Controlle
         try
         {
             const string subject = "A message about your Family Tree";
-            string body = $"Hello! A family member wanted to share this message with you: {message}";
+            string body = $@"
+                <p>Hello! A family member wanted to share this message with you:</p>
+                <p>{message}</p>
+                <p><a href='http://localhost:5119'>Open the Family Tree Builder</a></p>
+                ";
+
             
             // Compiler can now find _emailService
             await _emailService.SendSimpleEmailAsync(email, subject, body);
