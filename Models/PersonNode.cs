@@ -14,5 +14,6 @@ namespace family_tree_builder.Models
         public required string Name { get; set; }
 
         // TODO: I may wanna add another field like authenticationEmail or authenticationToken (reasearch it)
+        public string? UserId { get; set; }
     }
 }

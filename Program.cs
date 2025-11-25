@@ -1,43 +1,81 @@
-    using family_tree_builder.Data;
-    using Microsoft.EntityFrameworkCore;
-    using System.Text.Json;
+using family_tree_builder.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;     // ← needed for SignInScheme
+using Microsoft.AspNetCore.Authentication.Google;     // ← needed for AddGoogle
+using Microsoft.AspNetCore.Identity;                   // ← needed for AddDefaultIdentity
+using Microsoft.EntityFrameworkCore;
 
-    var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-    // Add services to the container.
-    builder.Services.AddControllersWithViews();
-    // Database
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite("Data Source=familytree.db"));
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();   // ← required for Identity pages
 
-    // Convert PascalCase fields into camelCase and vice versa when sending to/from browser
-    builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        });
+// Database - SQLite
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite("Data Source=familytree.db"));
 
-    var app = builder.Build();
+// ─────────────────────── IDENTITY + GOOGLE (this is the correct order) ───────────────────────
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>();
 
-    // Configure the HTTP request pipeline.
-    if (!app.Environment.IsDevelopment())
+// Google Authentication - now compiles because of the using statements above
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
     {
-        app.UseExceptionHandler("/Home/Error");
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-        app.UseHsts();
-    }
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+        options.SignInScheme = IdentityConstants.ExternalScheme;   // ← fixes the 500 error
+    });
 
-    app.UseHttpsRedirection();
-    app.UseStaticFiles();
-    app.UseRouting();
-    app.UseAuthorization();
+// Nice cookie settings (highly recommended)
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+    options.SlidingExpiration = true;
+});
 
-    app.MapStaticAssets();
+// JSON: PascalCase → camelCase
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
 
-    app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
-        .WithStaticAssets();
+var app = builder.Build();
 
+// Pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
-    app.Run();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+
+app.UseAuthentication();   // ← must be before UseAuthorization
+app.UseAuthorization();
+
+app.MapStaticAssets();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
+app.MapRazorPages();   // ← required for Login/Register pages
+
+app.Run();
