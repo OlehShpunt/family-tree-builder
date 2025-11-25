@@ -17,11 +17,14 @@ public class HomeController : Controller
         _db = db;
     }
 
+    // Just leads to the home page url
     public IActionResult Index()
     {
         return View();
     }
 
+    // Endpoint to replace all family tree data in the database
+    // It uses the persistence utility to interact with the database
     [HttpPost("replace-all-people-nodes")]
     public async Task<IActionResult> ReplaceAll([FromBody] List<PersonNode> people)
     {
@@ -29,6 +32,8 @@ public class HomeController : Controller
         return Ok("Database replaced");
     }
 
+    // Endpoint to fetch all family tree data from the database
+    // It uses the persistence utility to interact with the database
     [HttpGet("all-people-nodes")]
     public async Task<IActionResult> GetAll()
     {
@@ -36,6 +41,7 @@ public class HomeController : Controller
         return Ok(peopleNodes);  // Automatically serialized into JSON
     }
 
+    // Error handler
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]  // This tells browser not to cache this page
     public IActionResult Error()
     {

@@ -7,16 +7,16 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/family_tree_builder.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <div class="container">
-        <main>
-            @RenderBody()
-        </main>
-    </div>
+    @RenderBody()
+
+    <!-- Scripts in correct order -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://balkan.app/js/familytree.js"></script>
+    <script src="~/js/data-loader.js"></script>
+    <script src="~/js/data-manager.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

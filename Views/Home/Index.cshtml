@@ -8,7 +8,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         body {
             padding-top: 70px;
@@ -24,7 +23,6 @@
     </style>
 </head>
 <body>
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
@@ -43,10 +41,15 @@
             <div class="col-md-3 p-3 border-end">
                 <h5>Actions</h5>
                 <div class="d-grid gap-2">
-                    <button class="btn btn-success sidebar-btn" data-bs-toggle="tab" data-bs-target="#addParents">Add Parents</button>
-					<button class="btn btn-info sidebar-btn" data-bs-toggle="tab" data-bs-target="#addChild">Add Child</button>
-                    <button class="btn btn-warning sidebar-btn" data-bs-toggle="tab" data-bs-target="#editTab">Edit Person</button>
-                    <button class="btn btn-danger sidebar-btn" data-bs-toggle="tab" data-bs-target="#deleteTab">Delete Person</button>
+                    <button class="btn btn-success sidebar-btn" 
+                            onclick="showTab('addParents')" 
+                            type="button">Add Parents</button>
+                    <button class="btn btn-info sidebar-btn" 
+                            onclick="showTab('addChild')" 
+                            type="button">Add Child</button>
+                    <button class="btn btn-danger sidebar-btn" 
+                            onclick="showTab('deletePerson')" 
+                            type="button">Delete Person</button>
                 </div>
 
                 <!-- Tabs Content -->
@@ -55,68 +58,43 @@
                     <!-- Add Parents Tab -->
                     <div class="tab-pane fade" id="addParents">
                         <h6>Add Parents</h6>
-                        <form id="addParentForm">
+                        <!-- <form id="addParentForm"> -->
                             <div class="mb-2">
-                                <label>Name</label>
-                                <input type="text" name="Name" class="form-control" required />
+                                <label>Fathers' Name</label>
+                                <input type="text" name="Name" class="form-control" id="fathersName" required />
                             </div>
                             <div class="mb-2">
-                                <label>Gender</label>
-                                <select name="Gender" class="form-select">
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                </select>
+                                <label>Mothers' Name</label>
+                                <input type="text" name="Name" class="form-control" id="mothersName" required />
                             </div>
-                            <div class="mb-2">
-                                <label>Father</label>
-                                <select name="FatherId" class="form-select">
-                                    <option value="">None</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm w-100">Add</button>
-                        </form>
+                            
+                            <button onclick="addParents()" class="btn btn-primary btn-sm w-100">Add</button>
+                        <!-- </form> -->
                     </div>
 
                     <!-- Add Child Tab -->
                     <div class="tab-pane fade" id="addChild">
                         <h6>Add Child</h6>
-                        <form id="addPersonForm">
                             <div class="mb-2">
                                 <label>Name</label>
-                                <input type="text" name="Name" class="form-control" required />
+                                <input type="text" name="Name" class="form-control" id="childsName" required />
                             </div>
                             <div class="mb-2">
                                 <label>Gender</label>
-                                <select name="Gender" class="form-select">
+                                <select name="Gender" class="form-select" id="childsGender">
                                     <option>Male</option>
                                     <option>Female</option>
+                                    <option>Prefer not to say</option>
                                 </select>
                             </div>
-                            <div class="mb-2">
-                                <label>Father</label>
-                                <select name="FatherId" class="form-select">
-                                    <option value="">None</option>
-                                </select>
-                            </div>
-                            <div class="mb-2">
-                                <label>Mother</label>
-                                <select name="MotherId" class="form-select">
-                                    <option value="">None</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm w-100">Add</button>
-                        </form>
-                    </div>
-
-                    <!-- Edit Person Tab -->
-                    <div class="tab-pane fade" id="editTab">
-                        <h6>Edit Person</h6>
+                            <button onclick="addChild()" type="submit" class="btn btn-primary btn-sm w-100">Add</button>
                     </div>
 
                     <!-- Delete Person Tab -->
-                    <div class="tab-pane fade" id="deleteTab">
+                    <div class="tab-pane fade" id="deletePerson">
                         <h6>Delete Person</h6>
                         <p>Select a person on the tree to delete</p>
+                        <button onclick="deletePerson()" type="submit" class="btn btn-primary btn-sm w-100">Delete</button>
                     </div>
 
                 </div> <!-- End Tab Content -->
@@ -131,7 +109,78 @@
         </div> <!-- End Row -->
     </div> <!-- End Container -->
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Pure JavaScript tab system – no Bootstrap JS needed → no "Illegal invocation" ever
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Manual tab switching
+        const tabButtons = document.querySelectorAll('.sidebar-btn');
+        const tabPanes   = document.querySelectorAll('.tab-pane');
+
+        function showTab(tabId) {
+            // Remove active classes from all
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+
+            // Add active to clicked button and target pane
+            const activeButton = document.querySelector(`.sidebar-btn[onclick="showTab('${tabId}')"]`);
+            const activePane   = document.getElementById(tabId);
+
+            if (activeButton) activeButton.classList.add('active');
+            if (activePane) {
+                activePane.classList.add('show', 'active');
+            }
+        }
+
+        // Make the function global so onclick works
+        window.showTab = showTab;
+
+        // Optional: open first tab on load
+        showTab('addParents');
+
+        // === 2. Initialize the Family Tree ===
+        new DataLoader("@Url.Action("GetAll", "Home")").initialize();
+    });
+</script>
+
+    <script>
+        function addParents() {
+
+            console.log("Button clicked!")
+
+            const fName = document.getElementById("fathersName").value;
+            const mName = document.getElementById("mothersName").value;
+
+            if (fName == "" || mName == "") {
+                return;
+            };
+
+            DataManager.addParents(mName, fName);
+        }
+
+        function addChild() {
+
+            console.log("Button clicked!")
+
+            const cName = document.getElementById("childsName").value;
+            const cGender = document.getElementById("childsGender").value;
+
+            if (cName == "" || cGender == "") {
+                return;
+            };
+
+            DataManager.addChild(cName, cGender);
+        }
+
+        function deletePerson() {
+            console.log("Button clicked!");
+            DataManager.deletePerson();
+        }
+
+        window.addParents = addParents;
+    </script>
 </body>
+
 </html>
