@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
+ 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -49,11 +49,10 @@
             </div>
         </div>
     </nav>
-    <!-- Main Container -->
+
     <div class="container-fluid">
         <div class="row">
 
-            <!-- Left Sidebar -->
             <div class="col-md-3 p-3 border-end">
                 <h5>Actions</h5>
                 <div class="d-grid gap-2">
@@ -72,13 +71,13 @@
                     </button>
                 </div>
 
-                <!-- Tabs Content -->
+                
                 <div class="tab-content mt-3">
 
-                    <!-- Add Parents Tab -->
+              
                     <div class="tab-pane fade" id="addParents">
                         <h6>Add Parents</h6>
-                        <!-- <form id="addParentForm"> -->
+                   
                             <div class="mb-2">
                                 <label>Fathers' Name</label>
                                 <input type="text" name="Name" class="form-control" id="fathersName" required />
@@ -89,10 +88,10 @@
                             </div>
                             
                             <button onclick="addParents()" class="btn btn-primary btn-sm w-100">Add</button>
-                        <!-- </form> -->
+              
                     </div>
 
-                    <!-- Add Child Tab -->
+           
                     <div class="tab-pane fade" id="addChild">
                         <h6>Add Child</h6>
                             <div class="mb-2">
@@ -130,41 +129,41 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Delete Person Tab -->
+                    
                     <div class="tab-pane fade" id="deletePerson">
                         <h6>Delete Person</h6>
                         <p>Select a person on the tree to delete</p>
                         <button onclick="deletePerson()" type="submit" class="btn btn-primary btn-sm w-100">Delete</button>
                     </div>
 
-                </div> <!-- End Tab Content -->
-            </div> <!-- End Left Sidebar -->
+                </div> 
+            </div>
 
-            <!-- Right Tree Container -->
+  
             <div class="col-md-9 p-3">
                 <h5>Family Tree</h5>
                 <div id="treeContainer"></div>
             </div>
 
-        </div> <!-- End Row -->
-    </div> <!-- End Container -->
+        </div>
+    </div> 
 
     <script>
     // Pure JavaScript tab system – no Bootstrap JS needed → no "Illegal invocation" ever
     document.addEventListener("DOMContentLoaded", function () {
 
-        // Manual tab switching
+        
         const tabButtons = document.querySelectorAll('.sidebar-btn');
         const tabPanes   = document.querySelectorAll('.tab-pane');
 
         function showTab(tabId) {
-            // Remove active classes from all
+        
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabPanes.forEach(pane => {
                 pane.classList.remove('show', 'active');
             });
 
-            // Add active to clicked button and target pane
+        
             const activeButton = document.querySelector(`.sidebar-btn[onclick="showTab('${tabId}')"]`);
             const activePane   = document.getElementById(tabId);
 
@@ -174,13 +173,11 @@
             }
         }
 
-        // Make the function global so onclick works
         window.showTab = showTab;
 
         // Optional: open first tab on load
         showTab('addParents');
 
-        // === 2. Initialize the Family Tree ===
         new DataLoader("@Url.Action("GetAll", "Home")").initialize();
     });
 </script>
