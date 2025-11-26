@@ -44,14 +44,23 @@ class DataLoader {
   async loadDatabaseData() {
     try {
       const response = await fetch(this.dataUrl);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
+      // if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      let data = [{ id: "1", name: "Enter a name" }];
+      if (response.ok) {
+        data = await response.json();
+      }
+
       this.tree.load(data);
       window.lastData = data;
+      return;
     } catch (err) {
       console.error("Failed to load family tree data:", err);
-      alert("Could not load family data");
+      // alert("Could not load family data");
     }
+    // In case user is unauthorized, provide with default node
+    const defaultData = [{ id: 1, name: "Enter a name" }];
+    this.tree.load(defaultData);
+    window.lastData = defaultData;
   }
 }
 
