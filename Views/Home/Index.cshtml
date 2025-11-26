@@ -261,6 +261,12 @@
             dm.saveChangesToDatabase();
         }
 
+        // Show confirmation when leaving or reloading the page
+        window.addEventListener("beforeunload", function (e) {
+            e.preventDefault();
+            e.returnValue = "";
+        });
+
         window.addParents = addParents;
     </script>
 </body>
