@@ -1,20 +1,23 @@
 using family_tree_builder.Data;
-using Microsoft.AspNetCore.Authentication.Cookies;     // ← needed for SignInScheme
-using Microsoft.AspNetCore.Authentication.Google;     // ← needed for AddGoogle
-using Microsoft.AspNetCore.Identity;                   // ← needed for AddDefaultIdentity
+using Microsoft.AspNetCore.Authentication.Cookies;  
+using Microsoft.AspNetCore.Authentication.Google;   
+using Microsoft.AspNetCore.Identity;                  
 using Microsoft.EntityFrameworkCore;
-
+using FluentEmail.Core;
+using FluentEmail.Smtp;
+using System.Net;
+using System.Net.Mail;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();   // ← required for Identity pages
+builder.Services.AddRazorPages();  
 
 // Database - SQLite
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite("Data Source=familytree.db"));
 
-// ─────────────────────── IDENTITY + GOOGLE (this is the correct order) ───────────────────────
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -26,16 +29,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Google Authentication - now compiles because of the using statements above
+
 builder.Services.AddAuthentication()
     .AddGoogle(options =>
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-        options.SignInScheme = IdentityConstants.ExternalScheme;   // ← fixes the 500 error
+        options.SignInScheme = IdentityConstants.ExternalScheme;   
     });
 
-// Nice cookie settings (highly recommended)
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
@@ -43,8 +46,24 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromDays(30);
     options.SlidingExpiration = true;
 });
+var senderEmail =  builder.Configuration["Email:Sender"] 
+                  ?? throw new InvalidOperationException("Email:Sender not configured");       
+var appPassword = builder.Configuration["Email:AppPassword"] 
+                  ?? throw new InvalidOperationException("Email:AppPassword not configured");
 
-// JSON: PascalCase → camelCase
+builder.Services.AddFluentEmail(senderEmail)
+    .AddRazorRenderer()
+    .AddSmtpSender(new SmtpClient("smtp.gmail.com")
+    {
+        UseDefaultCredentials = false,
+        Port = 587,
+        Credentials = new NetworkCredential(senderEmail, appPassword),
+        EnableSsl = true
+    });
+    
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<EmailService>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
@@ -76,7 +95,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication();   // ← must be before UseAuthorization
+app.UseAuthentication();  
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -86,6 +105,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-app.MapRazorPages();   // ← required for Login/Register pages
+app.MapRazorPages();   
 
 app.Run();

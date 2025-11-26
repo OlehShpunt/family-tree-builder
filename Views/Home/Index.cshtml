@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
+ 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -49,11 +49,10 @@
             </div>
         </div>
     </nav>
-    <!-- Main Container -->
+
     <div class="container-fluid">
         <div class="row">
 
-            <!-- Left Sidebar -->
             <div class="col-md-3 p-3 border-end">
                 <h5>Actions</h5>
                 <div class="d-grid gap-2">
@@ -66,15 +65,19 @@
                     <button class="btn btn-danger sidebar-btn" 
                             onclick="showTab('deletePerson')" 
                             type="button">Delete Person</button>
+                    <button type="button" class="btn btn-warning"
+                            data-bs-toggle="modal" data-bs-target="#emailTreeModal">
+                            Email My Family Tree
+                    </button>
                 </div>
 
-                <!-- Tabs Content -->
+                
                 <div class="tab-content mt-3">
 
-                    <!-- Add Parents Tab -->
+              
                     <div class="tab-pane fade" id="addParents">
                         <h6>Add Parents</h6>
-                        <!-- <form id="addParentForm"> -->
+                   
                             <div class="mb-2">
                                 <label>Fathers' Name</label>
                                 <input type="text" name="Name" class="form-control" id="fathersName" required />
@@ -85,10 +88,10 @@
                             </div>
                             
                             <button onclick="addParents()" class="btn btn-primary btn-sm w-100">Add</button>
-                        <!-- </form> -->
+              
                     </div>
 
-                    <!-- Add Child Tab -->
+           
                     <div class="tab-pane fade" id="addChild">
                         <h6>Add Child</h6>
                             <div class="mb-2">
@@ -105,18 +108,38 @@
                             </div>
                             <button onclick="addChild()" type="submit" class="btn btn-primary btn-sm w-100">Add</button>
                     </div>
-
-                    <!-- Delete Person Tab -->
+                    <div class="modal fade" id="emailTreeModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Share Family Tree by Email</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Recipient Email</label>
+                                        <input type="email" class="form-control" id="recipientEmail" placeholder="grandma@example.com" required>
+                                    </div>
+                                    <div id="emailStatus"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary" onclick="sendMessage()">Send Email</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="tab-pane fade" id="deletePerson">
                         <h6>Delete Person</h6>
                         <p>Select a person on the tree to delete</p>
                         <button onclick="deletePerson()" type="submit" class="btn btn-primary btn-sm w-100">Delete</button>
                     </div>
 
-                </div> <!-- End Tab Content -->
-            </div> <!-- End Left Sidebar -->
+                </div> 
+            </div>
 
-            <!-- Right Tree Container -->
+  
             <div class="col-md-9 p-3">
                 <h5>Family Tree</h5>
                 <!-- Display last visit time (cookies) -->
@@ -124,25 +147,25 @@
                 <div id="treeContainer"></div>
             </div>
 
-        </div> <!-- End Row -->
-    </div> <!-- End Container -->
+        </div>
+    </div> 
 
     <script>
-    // Pure JavaScript tab system – no Bootstrap JS needed → no "Illegal invocation" ever
+    
     document.addEventListener("DOMContentLoaded", function () {
 
-        // Manual tab switching
+        
         const tabButtons = document.querySelectorAll('.sidebar-btn');
         const tabPanes   = document.querySelectorAll('.tab-pane');
 
         function showTab(tabId) {
-            // Remove active classes from all
+        
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabPanes.forEach(pane => {
                 pane.classList.remove('show', 'active');
             });
 
-            // Add active to clicked button and target pane
+        
             const activeButton = document.querySelector(`.sidebar-btn[onclick="showTab('${tabId}')"]`);
             const activePane   = document.getElementById(tabId);
 
@@ -152,13 +175,12 @@
             }
         }
 
-        // Make the function global so onclick works
         window.showTab = showTab;
 
-        // Optional: open first tab on load
+  
         showTab('addParents');
 
-        // === 2. Initialize the Family Tree ===
+       
         new DataLoader("@Url.Action("GetAll", "Home")").initialize();
     });
 </script>
@@ -191,7 +213,42 @@
 
             DataManager.addChild(cName, cGender);
         }
+        async function sendMessage() {
+            const email = document.getElementById("recipientEmail").value.trim();
+            const message = "Please check out the updated Family Tree!"; 
+    
+            if (!email) return alert("Please enter a recipient email");
 
+            const emailStatusElement = document.getElementById("emailStatus");
+            emailStatusElement.innerHTML =
+                '<small class="text-info">Sending  message...</small>';
+
+            try {
+                const formData = new FormData();
+                formData.append("email", email);
+                formData.append("message", message); 
+
+                const response = await fetch("/send-message", {
+                method: "POST",
+                body: formData 
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    emailStatusElement.innerHTML =
+                        `<div class="text-success">Message sent successfully to ${email}!</div>`;
+                } else {
+                    emailStatusElement.innerHTML =
+                        `<div class="text-danger">Error: ${result.message || "Send failed"}</div>`;
+                }
+
+            } catch (err) {
+                console.error("Message send error:", err);
+                emailStatusElement.innerHTML =
+                    `<div class="text-danger">Failed: Network or server connection error.</div>`;
+            }
+        }
         function deletePerson() {
             console.log("Button clicked!");
             DataManager.deletePerson();
