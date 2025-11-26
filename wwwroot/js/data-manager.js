@@ -91,7 +91,7 @@ class DataManager {
       }
       if (node.pids) {
         if (node.pids[0] == window.currentSelectedNode.id) {
-          node.pids[0] = undefined;
+          node.pids = [];
         }
       }
     });
@@ -150,6 +150,13 @@ class DataManager {
       return;
     }
 
+    // Set all null pids to []
+    window.lastData.forEach((node) => {
+      if (node.pids == null || node.pids == undefined) {
+        node.pids = [];
+      }
+    });
+
     try {
       const response = await fetch("/replace-all-people-nodes", {
         method: "POST",
@@ -162,7 +169,6 @@ class DataManager {
         throw new Error("Failed to save data");
       }
       const result = await response.text();
-      console.log("Data saved successfully!");
       console.log(result);
     } catch (err) {
       console.error(err);

@@ -8,35 +8,29 @@ public static class DatabasePersistenceUtility
 {
     
     public static async Task ReplaceAllPeopleNodesAsync(
-        ApplicationDbContext db, 
-        List<PersonNode> newPeople, 
-        string? currentUserId)   
+    ApplicationDbContext db,
+    List<PersonNode> newPeople,
+    string currentUserId)
     {
- 
         if (string.IsNullOrEmpty(currentUserId))
             return;
 
- 
+        // Delete all old nodes for this user
         await db.PersonNodes
             .Where(p => p.UserId == currentUserId)
             .ExecuteDeleteAsync();
 
- 
-        await db.Database.ExecuteSqlRawAsync(
-            "DELETE FROM sqlite_sequence WHERE name = 'PersonNodes'");
-
-      
-        foreach (var person in newPeople)
+        // Assign UserId to new nodes (if any)
+        if (newPeople != null && newPeople.Count > 0)
         {
-            person.UserId = currentUserId;
-        }
+            foreach (var person in newPeople)
+                person.UserId = currentUserId;
 
-        if (newPeople.Count > 0)
-        {
             await db.PersonNodes.AddRangeAsync(newPeople);
             await db.SaveChangesAsync();
         }
     }
+
 
 
     public static async Task<List<PersonNode>> GetAllPeopleNodesAsync(

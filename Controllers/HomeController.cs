@@ -55,6 +55,11 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> ReplaceAll([FromBody] List<PersonNode> people)
     {
+        if (people == null)
+        {
+            return BadRequest(new { message = "Invalid JSON data format resulted in 'people' being null." });
+        }
+        
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
