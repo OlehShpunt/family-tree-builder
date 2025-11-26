@@ -11,6 +11,22 @@
 <body>
     @RenderBody()
 
+    @if (!Context.Request.Cookies.ContainsKey("cookies_accepted"))
+    {
+        <div id="cookieBanner" style="background: #eee; padding: 10px; text-align: center; position: fixed; bottom: 0; width: 100%; z-index: 1000;">
+            This site uses cookies to enhance your experience.
+            <button onclick="acceptCookies()" style="margin-left: 10px;">Accept</button>
+        </div>
+
+        <script>
+            function acceptCookies() {
+                // Set a cookie to remember the user accepted
+                document.cookie = "cookies_accepted=true; path=/; max-age=" + 60*60*24*365; // 1 year
+                // Hide the banner
+                document.getElementById('cookieBanner').style.display = 'none';
+            }
+        </script>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

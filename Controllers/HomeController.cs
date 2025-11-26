@@ -21,6 +21,32 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+
+        // Check for cookies consent
+        if (Request.Cookies.ContainsKey("cookies_accepted"))
+        {
+            // Get previous last-visit time from cookie, if any
+            string? lastVisit = Request.Cookies["lastVisit"];
+
+            // Format the last visit
+            if (DateTime.TryParse(lastVisit, out var lastVisitTime))
+            {
+                ViewBag.LastVisit = "Your last visit was on " + lastVisitTime.ToLocalTime().ToString("f");
+            }
+            else
+            {
+                ViewBag.LastVisit = "This is your first visit!";
+            }
+
+            // Store current visit time in cookie
+            string currentVisit = DateTime.UtcNow.ToString("o");
+            Response.Cookies.Append("lastVisit", currentVisit, new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddDays(60),
+                HttpOnly = false  // NOTE: Vulnerable to XSS, but okay for an MVP
+            });
+        }
+
         return View();
     }
 
