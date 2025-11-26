@@ -144,6 +144,7 @@
                 <h5>Family Tree</h5>
                 <!-- Display last visit time (cookies) -->
                 <p>@ViewBag.LastVisit</p>
+                <button onclick="saveChangesToDb()" class="btn btn-primary btn-sm mb-3">Save Changes</button>
                 <div id="treeContainer"></div>
             </div>
 
@@ -253,6 +254,18 @@
             console.log("Button clicked!");
             DataManager.deletePerson();
         }
+        
+        async function saveChangesToDb() {
+            console.log("Button clicked!");
+            const dm = new DataManager();
+            dm.saveChangesToDatabase();
+        }
+
+        // Show confirmation when leaving or reloading the page
+        window.addEventListener("beforeunload", function (e) {
+            e.preventDefault();
+            e.returnValue = "";
+        });
 
         window.addParents = addParents;
     </script>

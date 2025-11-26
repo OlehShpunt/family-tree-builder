@@ -91,7 +91,7 @@ class DataManager {
       }
       if (node.pids) {
         if (node.pids[0] == window.currentSelectedNode.id) {
-          node.pids[0] = undefined;
+          node.pids = [];
         }
       }
     });
@@ -140,6 +140,39 @@ class DataManager {
     });
 
     window.familyTreeInstance.load(window.lastData);
+  }
+
+  async saveChangesToDatabase() {
+    console.log("lastData currently is: ", window.lastData);
+
+    if (!window.lastData || window.lastData.length == 0) {
+      console.log("lastData is empty, so aborting saving.");
+      return;
+    }
+
+    // Set all null pids to []
+    window.lastData.forEach((node) => {
+      if (node.pids == null || node.pids == undefined) {
+        node.pids = [];
+      }
+    });
+
+    try {
+      const response = await fetch("/replace-all-people-nodes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(window.lastData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save data");
+      }
+      const result = await response.text();
+      console.log(result);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 
