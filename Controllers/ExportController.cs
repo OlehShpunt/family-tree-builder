@@ -10,13 +10,10 @@ using Microsoft.AspNetCore.Http;
 public class ExportController : ControllerBase 
 {
     private readonly EmailService _emailService; 
-
-
     public ExportController(EmailService emailService)
     {
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
     }
-
     [Authorize]
     [HttpPost("/send-message")] 
    
@@ -47,8 +44,6 @@ public class ExportController : ControllerBase
             return StatusCode(500, new { success = false, message = "Failed to send message. Check SMTP setup." });
         }
     }
-    
-
     private bool IsValidEmail(string email)
     {
         try
