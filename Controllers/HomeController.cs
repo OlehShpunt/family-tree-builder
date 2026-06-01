@@ -18,10 +18,8 @@ public class HomeController : Controller
         _logger = logger;
         _db = db;
     }
-
     public IActionResult Index()
     {
-
         // Check for cookies consent
         if (Request.Cookies.ContainsKey("cookies_accepted"))
         {
